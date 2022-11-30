@@ -1,4 +1,4 @@
-package com.jiawa.wiki.util;
+package com.java.wiki.util;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.CollectionUtils;

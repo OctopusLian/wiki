@@ -1,13 +1,16 @@
 package com.java.wiki.controller;
 
 import com.java.wiki.domain.Ebook;
+import com.java.wiki.req.EbookQueryReq;
+import com.java.wiki.req.EbookSaveReq;
 import com.java.wiki.resp.CommonResp;
+import com.java.wiki.resp.EbookQueryResp;
+import com.java.wiki.resp.PageResp;
 import com.java.wiki.service.EbookService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController // 返回字符串
@@ -18,10 +21,24 @@ public class EbookController {
     private EbookService ebookService;
 
     @GetMapping("/list")
-    public CommonResp list() {
+    public CommonResp list(@Valid EbookQueryReq req) {
         CommonResp<List<Ebook>> resp = new CommonResp<>();
-        List<Ebook> list = ebookService.list();
-        resp.setContent(list);
+        PageResp<EbookQueryResp> list = ebookService.list(req);
+        resp.setContent((List<Ebook>) list);
+        return resp;
+    }
+
+    @PostMapping("/save")
+    public CommonResp save(@Valid @RequestBody EbookSaveReq req) {
+        CommonResp resp = new CommonResp<>();
+        ebookService.save(req);
+        return resp;
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public CommonResp delete(@PathVariable Long id) {
+        CommonResp resp = new CommonResp<>();
+        ebookService.delete(id);
         return resp;
     }
 }
