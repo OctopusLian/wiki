@@ -2,8 +2,6 @@
   <a-layout>
     <a-layout-sider width="200" style="background: #fff">
     <a-menu
-        v-model:selectedKeys="selectedKeys2"
-        v-model:openKeys="openKeys"
         mode="inline"
         :style="{ height: '100%', borderRight: 0 }"
     >
@@ -48,7 +46,38 @@
     <a-layout-content
       :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
   >
-    Content
+      <pre>
+{{ebooks}}
+{{ebooks2}}
+      </pre>
   </a-layout-content>
   </a-layout>
 </template>
+
+<script lang="ts">
+  import { defineComponent,onMounted,ref,reactive,toRef } from 'vue';
+  import axios from "axios";
+
+  export default defineComponent({
+    name: 'App',
+    setup() {
+      console.log("setup");
+      const ebooks = ref();  // 响应式数据
+      const ebooks1 = reactive({books:[]});
+
+      onMounted(() => {  // 生命周期钩子函数
+        console.log("onMounted");
+        axios.get("http://localhost:8081/ebook/list?name=Spring").then((response) => {
+          const data = response.data;
+          ebooks.value = data.content;
+          ebooks1.books = data.content;
+          console.log(response);});
+      });
+
+      return {
+        ebooks,
+        ebooks2: toRef(ebooks1,"books")
+      }
+    }
+  });
+</script>
